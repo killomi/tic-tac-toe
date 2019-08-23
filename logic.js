@@ -32,17 +32,13 @@ function isWinO(item) {
 }
 
 function result(activePlayer) {
-
     for (let i = 0; i < fieldNumber; i++) {
-        console.log(field[i]);
-        let checkX = field[i].every(isWinX);
-        let checkO = field[i].every(isWinO);
-        if (checkX == true) {
-            showWinner(0);
-        }
-        if (checkO == true) {
-            showWinner(1);
-        }
+        const changeX = row => row[i];
+        const changeY = (column, i) => field.map(changeX);
+        let fieldHorizontal = field;
+        let fieldVertical = field[0].map(changeY);
+        console.log(fieldVertical[i]);
+        checkResult(fieldHorizontal, fieldVertical, i);
     }
 
     if (usedCells < (fieldNumber * fieldNumber)) {
@@ -57,6 +53,19 @@ function result(activePlayer) {
     }
     else {
         showNoMoreSpace();
+    }
+}
+
+function checkResult(fieldHorizontal, fieldVertical, i) {
+    let checkXHor = fieldHorizontal[i].every(isWinX);
+    let checkOHor = fieldHorizontal[i].every(isWinO);
+    let checkXVer = fieldVertical[i].every(isWinX);
+    let checkOVer = fieldVertical[i].every(isWinO);
+    if (checkXHor == true || checkXVer == true) {
+        showWinner(0);
+    }
+    if (checkOHor == true || checkOVer == true) {
+        showWinner(1);
     }
 }
 
