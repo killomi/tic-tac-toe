@@ -1,9 +1,21 @@
 let activePlayer;
 let field = [];
-let fieldForCheck = [];
 let players = ['X', 'O', ''];
 let fieldNumber = 3;
 let usedCells = 0;
+
+
+function startGame() {
+    activePlayer = 2;
+    activePlayer = drawField(activePlayer);
+    renderBoard(field);
+}
+
+function click(row, column) {
+    activePlayer = drawField(activePlayer, row, column);
+    renderBoard(field);
+    activePlayer = result(activePlayer);
+}
 
 function drawField(activePlayer, row = -1, column = -1) {
     if (row == -1 && column == -1) {
@@ -23,22 +35,15 @@ function drawField(activePlayer, row = -1, column = -1) {
     return activePlayer;
 }
 
-function isWinX(item) {
-    return item =='X';
-}
-
-function isWinO(item) {
-    return item =='O';
-}
-
 function result(activePlayer) {
     for (let i = 0; i < fieldNumber; i++) {
         const changeX = row => row[i];
         const changeY = (column, i) => field.map(changeX);
         let fieldHorizontal = field;
         let fieldVertical = field[0].map(changeY);
-        console.log(fieldVertical[i]);
-        checkResult(fieldHorizontal, fieldVertical, i);
+        let firstDiagonal = field[0].map((column, i) => field[i][i]);
+        let secondDiagonal = field[0].map((column, i) => field[fieldNumber - i - 1][i]);
+        checkResult(fieldHorizontal, fieldVertical, firstDiagonal, secondDiagonal, i);
     }
 
     if (usedCells < (fieldNumber * fieldNumber)) {
@@ -56,27 +61,36 @@ function result(activePlayer) {
     }
 }
 
-function checkResult(fieldHorizontal, fieldVertical, i) {
-    let checkXHor = fieldHorizontal[i].every(isWinX);
-    let checkOHor = fieldHorizontal[i].every(isWinO);
-    let checkXVer = fieldVertical[i].every(isWinX);
-    let checkOVer = fieldVertical[i].every(isWinO);
-    if (checkXHor == true || checkXVer == true) {
+function checkResult(fieldHorizontal, fieldVertical, firstDiagonal, secondDiagonal, i) {
+    let checkX = [
+        fieldHorizontal[i].every(isWinX),
+        fieldVertical[i].every(isWinX),
+        firstDiagonal.every(isWinX),
+        secondDiagonal.every(isWinX)
+    ];
+    let checkO = [
+        fieldHorizontal[i].every(isWinO),
+        fieldVertical[i].every(isWinO),
+        firstDiagonal.every(isWinO),
+        secondDiagonal.every(isWinO)
+    ];
+
+    if (checkX.some(isTrue)) {
         showWinner(0);
     }
-    if (checkOHor == true || checkOVer == true) {
+    if (checkO.some(isTrue)) {
         showWinner(1);
     }
 }
 
-function startGame() {
-    activePlayer = 2;
-    activePlayer = drawField(activePlayer);
-    renderBoard(field);
+function isWinX(item) {
+    return item == 'X';
 }
 
-function click(row, column) {
-    activePlayer = drawField(activePlayer, row, column);
-    renderBoard(field);
-    activePlayer = result(activePlayer);
+function isWinO(item) {
+    return item == 'O';
+}
+
+function isTrue(item) {
+    return item == true;
 }
