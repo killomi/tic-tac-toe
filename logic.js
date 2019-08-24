@@ -2,10 +2,11 @@ let activePlayer;
 let field = [];
 let players = ['X', 'O', ''];
 let fieldNumber = 3;
-let usedCells = 0;
+let usedCells
 
 
 function startGame() {
+    usedCells = 0;
     activePlayer = 2;
     activePlayer = drawField(activePlayer);
     renderBoard(field);
@@ -22,9 +23,9 @@ function drawField(activePlayer, row = -1, column = -1) {
         for (let i = 0; i < fieldNumber; i++) {
             let fieldColumn = [];
             for (let j = 0; j < fieldNumber; j++) {
-                fieldColumn.push(players[activePlayer]);
+                fieldColumn[j] = players[activePlayer];
             }
-            field.push(fieldColumn);
+            field[i] = fieldColumn;
         }
         activePlayer = 0;
     }
